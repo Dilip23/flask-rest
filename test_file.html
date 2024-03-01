@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Submit Form</h2>
+        <form id="submitForm" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="likes">Likes:</label>
+            <input type="number" id="likes" name="likes" required><br><br>
+            <label for="file">File:</label>
+            <input type="file" id="file" name="file" required><br><br>
+            <button type="button" id="submitButton">Submit</button>
+        </form>
+        <p id="message"></p>
+    </div>
+    <script>
+
+function formDataToJson(formData) {
+    return Array.from(formData.entries()).reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+    }, {});
+}
+
+
+        $(document).ready(function () {
+    $("#submitButton").click(function () {
+        var formData = {
+            "name": $('#name').val(),
+            "likes": $("#likes").val(),
+            "file":$('#file')[0].files[0]
+        };
+
+        console.log(formData);
+ 
+        $.ajax({
+            url: "http://127.0.0.1:5000/video/1",
+            type: "POST",
+            data: JSON.stringify(formData),
+            processData: false,
+            contentType: false,
+            headers:{
+                'Content-Type': "application/json"
+            },
+            success: function () {
+                $("#message").text("Form submitted successfully");
+                $("#submitForm")[0].reset();
+            },
+            error: function () {
+                $("#message").text("Failed to submit form");
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>
